@@ -97,11 +97,66 @@ final class Client {
         return $this->parseResponse($response);
     }
 
+    public function getAllUnitPrices(): array
+    {
+        $response = $this->getClient()->request(
+            'GET',
+            '/Escrituracao/GetAllPus',
+            [
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $this->oauthToken),
+                ],
+            ],
+        );
+
+        return $this->parseResponse($response);
+    }
+
+    public function getUnitPrices(int $serieId, DateTimeInterface $start, DateTimeInterface $end): array
+    {
+        $response = $this->getClient()->request(
+            'GET',
+            '/CRM/GetPus',
+            [
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $this->oauthToken),
+                ],
+                RequestOptions::JSON => [
+                    'serieId' => $serieId,
+                    'dateInitial' => $start->format(DateTimeInterface::ISO8601),
+                    'dateFinal' => $end->format(DateTimeInterface::ISO8601),
+                ],
+            ],
+        );
+
+        return $this->parseResponse($response);
+    }
+
     public function getCalendarEvents(int $serieId, DateTimeInterface $start, DateTimeInterface $end): array
     {
         $response = $this->getClient()->request(
             'GET',
             '/Calendar/GetCalendarEventsAPI',
+            [
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $this->oauthToken),
+                ],
+                RequestOptions::JSON => [
+                    'serieId' => $serieId,
+                    'dateInitial' => $start->format(DateTimeInterface::ISO8601),
+                    'dateFinal' => $end->format(DateTimeInterface::ISO8601),
+                ],
+            ],
+        );
+
+        return $this->parseResponse($response);
+    }
+
+    public function getExpenses(int $serieId, DateTimeInterface $start, DateTimeInterface $end): array
+    {
+        $response = $this->getClient()->request(
+            'GET',
+            '/CRM/GetWorkflowDespesas',
             [
                 RequestOptions::HEADERS => [
                     'Authorization' => sprintf('Bearer %s', $this->oauthToken),
